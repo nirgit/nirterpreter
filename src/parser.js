@@ -1,18 +1,4 @@
-function createLexer(input) {
-    let position = 0
-
-    const eof = () => input.length <= position
-
-
-
-    return {
-        eof,
-        getNextToken,
-        getRestInScope
-    }
-}
-
-
+const createLexer = require('./lexer')
 
 /**
  * expressions:
