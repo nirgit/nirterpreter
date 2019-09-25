@@ -1,4 +1,13 @@
+const {isNumber, isString} = require('./utils')
 const createLexer = require('./lexer')
+
+const isDefine = token => token === 'define'
+
+
+const createNumberType = number => ({type: 'value', value: number})
+const createStringType = str => ({type: 'value', value: str})
+const createDefineType = (varName, parsedExp) => ({type: 'word', name: varName, value: parsedExp})
+
 
 /**
  * expressions:
@@ -7,8 +16,6 @@ const createLexer = require('./lexer')
  * >(3, 7)
  * define(x, 5)
  * define(y, +(x, 27))
- * 
- * 
  * 
  * 
  * @param {*} expressionStr 

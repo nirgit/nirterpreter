@@ -1,10 +1,9 @@
+const {isNumber, isQuotes} = require('./utils')
+
 function createLexer(input) {
     let position = 0
 
     const eof = () => input.length <= position
-
-    const isNumber = char => !Number.isNaN(Number(char))
-    const isString = char => char === '"'
 
     const skipAllWhiteSpaces = () => {
         while (!eof() && input[position] === ' ') {
@@ -23,11 +22,12 @@ function createLexer(input) {
             }
             return parseInt(token.join(''), 10)
         }
-        if (isString(char)) {
-            const token = []
-            while(!eof() && !isString(input[position])) {
+        if (isQuotes(char)) {
+            const token = ['"']
+            while(!eof() && !isQuotes(input[position])) {
                 token.push(input[position++])
             }
+            token.push('"')
             return token.join('')
         }
         if (char === '(' || char === ',') {
