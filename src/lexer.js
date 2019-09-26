@@ -6,7 +6,7 @@ function createLexer(input) {
     const eof = () => input.length <= position
 
     const skipAllWhiteSpaces = () => {
-        while (!eof() && input[position] === ' ') {
+        while (!eof() && input[position].match(/\s/)) {
             position++
         }
     }
@@ -51,13 +51,16 @@ function createLexer(input) {
     }
 
     function getRestInScope() {
-        // todo
+        return input.substring(position+1, input.lastIndexOf(')'))
     }
+
+    const peek = () => input[position]
 
     return {
         eof,
         getNextToken,
-        getRestInScope
+        getRestInScope,
+        peek
     }
 }
 

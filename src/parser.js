@@ -1,9 +1,8 @@
 const {isNumber, isString} = require('./utils')
 const createLexer = require('./lexer')
 
-const isDefine = token => token === 'define'
-const isOperator = (token, expressionStr) => expressionStr[token.length] === '('
-const isVariable = (token, expressionStr) => expressionStr.substr(token.length).trim() === ''
+const isOperator = lexer => lexer.peek() === '('
+const isVariable = (token, expressionStr) => expressionStr.trim() === token
 
 const createNumberType = number => ({type: 'value', value: number})
 const createStringType = str => ({type: 'value', value: str})
@@ -31,14 +30,43 @@ function parseExpression(expressionStr) {
         if (isString(token)) {
             return createStringType(token)
         }
-        if (isDefine(token)) {
-            return createDefineType(lexer.getNextToken(), parseExpression(lexer.getRestInScope()))
-        }
-        if (isOperator(token, expressionStr)) {
+        if (isOperator(lexer)) {
+            const argsStr = lexer.getRestInScope()
+            const opArgs = []
+            let argToken = ''
+            let argPos = 0
+            let depth = 0
+            // console.log(`processing argsStr: "${argsStr}"`)
+            while (argPos < argsStr.length) {
+                if (argsStr[argPos] === ',' && depth === 0) {
+                    opArgs.push(argToken)
+                    argToken = ''
+                    argPos++
+                    continue
+                } else if (argsStr[argPos] === '(') {
+                    depth++
+                } else if (argsStr[argPos] === ')') {
+                    depth--
+                    if (depth < 0) {
+                        throw new SyntaxError('too many closing parenthesis')
+                    }
+                }
+                argToken = argToken + argsStr[argPos]
+                argPos++
+            }
+            if (argToken !== '') {
+                opArgs.push(argToken)
+            }
+            if (depth > 0) {
+                throw new SyntaxError('unclosing parenthesis')
+            }
             return {
                 type: 'apply',
-                operator: {type: 'word', name: token},
-                args: expressionStr.substr(token.length + 1, expressionStr.length).split(',').map(parseExpression)
+                operator: {
+                    type: 'word', 
+                    name: token
+                },
+                args: opArgs.map(parseExpression)
             }
         }
         if (isVariable(token, expressionStr)) {

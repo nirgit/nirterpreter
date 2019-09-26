@@ -73,4 +73,34 @@ describe('parser', () => {
         }
         expect(syntaxTree).toEqual(expectedParseTree)
     })
+
+    it('should pass', () => {
+        const expression = '>(x, y)'
+        debugger
+        const syntaxTree = parser(expression)
+        expect(syntaxTree).toEqual({
+            type: 'apply',
+            operator: {type: 'word', name: '>'},
+            args: [
+                {type: 'word', name: 'x'},
+                {type: 'word', name: 'y'}
+            ]
+        })
+    })
+
+    it('should parse the little program', () => {
+        const expression = `
+            do(
+                define(x, 5), 
+                define(y, 18),
+                while(>(x, y2), do(
+                    print(x),
+                    define(x, +(x, 1))
+                ))
+            )
+        `
+        const syntaxTree = parser(expression)
+
+        console.log(JSON.stringify(syntaxTree, null, 4))
+    })
 })
