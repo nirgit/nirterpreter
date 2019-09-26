@@ -1,6 +1,6 @@
 const parser = require('../src/parser')
 
-describe.only('parser', () => {
+describe('parser', () => {
     it('should parse a simple number expression', () => {
         const expression = '13'
         const syntaxTree = parser(expression)
@@ -18,6 +18,20 @@ describe.only('parser', () => {
         expect(syntaxTree).toEqual({
             type: 'value',
             value: '"Hello Birrr"'
+        })
+    })
+
+    it('should parse a simple operator expression with simple arguments', () => {
+        const expression = '>(3, 7)'
+        const syntaxTree = parser(expression)
+
+        expect(syntaxTree).toEqual({
+            type: 'apply',
+            operator: {type: 'word', name: '>'},
+            args: [
+                {type: 'value', value: 3},
+                {type: 'value', value: 7}
+            ]
         })
     })
 

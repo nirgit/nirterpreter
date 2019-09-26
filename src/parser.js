@@ -36,8 +36,8 @@ function parseExpression(expressionStr) {
 
         return {
             type: 'apply',
-            operation: token,
-            arguments: expressionStr.substr(token+1, expressionStr.length).split(',').map(parseExpression)
+            operator: {type: 'word', name: token},
+            args: expressionStr.substr(token.length+1, expressionStr.length).split(',').map(parseExpression)
         }
     }
 }
