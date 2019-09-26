@@ -21,6 +21,16 @@ describe('parser', () => {
         })
     })
 
+    it('should parse a simple variable binding expression', () => {
+        const expression = 'x'
+        const syntaxTree = parser(expression)
+
+        expect(syntaxTree).toEqual({
+            type: 'word',
+            name: 'x'
+        })
+    })
+
     it('should parse a simple operator expression with simple arguments', () => {
         const expression = '>(3, 7)'
         const syntaxTree = parser(expression)
@@ -35,7 +45,21 @@ describe('parser', () => {
         })
     })
 
-    it.skip('should parse the simple expression', () => {
+    it('should parse an operator expression with expression arguments', () => {
+        const expression = 'foo(a, 8)'
+        const syntaxTree = parser(expression)
+
+        expect(syntaxTree).toEqual({
+            type: 'apply',
+            operator: {type: 'word', name: 'foo'},
+            args: [
+                {type: 'word', name: 'a'},
+                {type: 'value', value: 8}
+            ]
+        })
+    })
+
+    it('should parse the simple expression', () => {
         const expression = "+(a, 10)"
         const syntaxTree = parser(expression)
 

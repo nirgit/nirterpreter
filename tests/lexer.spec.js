@@ -11,5 +11,11 @@ describe('Lexer', () => {
         }
         expect(tokens).toEqual(['+', 'a', '10'])
     })
+
+    it('should return the only token in the expression', () => {
+        const lexer = createLexer('x')
+
+        expect(lexer.getNextToken()).toEqual('x')
+    })
 })
 

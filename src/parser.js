@@ -2,12 +2,13 @@ const {isNumber, isString} = require('./utils')
 const createLexer = require('./lexer')
 
 const isDefine = token => token === 'define'
-
+const isOperator = (token, expressionStr) => expressionStr[token.length] === '('
+const isVariable = (token, expressionStr) => expressionStr.substr(token.length).trim() === ''
 
 const createNumberType = number => ({type: 'value', value: number})
 const createStringType = str => ({type: 'value', value: str})
 const createDefineType = (varName, parsedExp) => ({type: 'word', name: varName, value: parsedExp})
-
+const createVarType = varName => ({type: 'word', name: varName})
 
 /**
  * expressions:
@@ -33,12 +34,17 @@ function parseExpression(expressionStr) {
         if (isDefine(token)) {
             return createDefineType(lexer.getNextToken(), parseExpression(lexer.getRestInScope()))
         }
-
-        return {
-            type: 'apply',
-            operator: {type: 'word', name: token},
-            args: expressionStr.substr(token.length+1, expressionStr.length).split(',').map(parseExpression)
+        if (isOperator(token, expressionStr)) {
+            return {
+                type: 'apply',
+                operator: {type: 'word', name: token},
+                args: expressionStr.substr(token.length + 1, expressionStr.length).split(',').map(parseExpression)
+            }
         }
+        if (isVariable(token, expressionStr)) {
+            return createVarType(token)
+        }
+        throw new Error('Syntax error: ' + token + '\n at:' + expressionStr)
     }
 }
 
