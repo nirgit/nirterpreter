@@ -96,6 +96,9 @@ describe('parser', () => {
                 while(>(x, y2), do(
                     print(x),
                     define(x, +(x, 1))
+                )),
+                if(>(x, 2), do(
+                    print("hurray")
                 ))
             )
         `
