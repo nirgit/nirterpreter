@@ -4,7 +4,7 @@ const ifOpeartor = function(ast, env) {
     const predicate = ast.args[0]
     const thenStmt = ast.args[1]
     if (evaluateAST(predicate, env)) {
-        return evaluateAST(thenStmt)
+        return evaluateAST(thenStmt, env)
     }
     return undefined
 }
@@ -18,15 +18,33 @@ const doOperation = function(ast, env) {
     return evaluateAST(statements[i], env)
 }
 
+const defineOperation = function(ast, env) {
+    const varToken = ast.args[0]
+    const varValue = evaluateAST(ast.args[1], env)
+    env[varToken.name] = varValue
+}
 
+const whileOperation = function(ast, env) {
+    const whilePred = ast.args[0]
+    const whileBody = ast.args[1]
 
+    while (evaluateAST(whilePred, env)) {
+        evaluateAST(whileBody, env)
+    }
+}
 
+const printOperation = function(ast, env) {
+    console.log(evaluateAST(ast.args[0], env))
+}
 
 
 const languageOperations = {}
 
 languageOperations["if"] = ifOpeartor
 languageOperations["do"] = doOperation
+languageOperations["define"] = defineOperation
+languageOperations["while"] = whileOperation
+languageOperations["print"] = printOperation
 
 
 
@@ -38,7 +56,7 @@ function evaluate(input) {
     return evaluateAST(ast)
 }
 
-function evaluateAST(ast, env = []) {
+function evaluateAST(ast, env = {}) {
     if (!ast) return
     if (ast.type === 'value') {
         if (typeof ast.value === 'string') {
@@ -47,10 +65,8 @@ function evaluateAST(ast, env = []) {
         return ast.value
     }
     if (ast.type === 'word') {
-        for (let i=env.length - 1; i >= 0; i--) {
-            if (env[i][ast.name] !== undefined) {
-                return env[i][ast.name]
-            }
+        if (env[ast.name] !== undefined) {
+            return env[ast.name]
         }
         return undefined
     }
@@ -65,10 +81,20 @@ function evaluateApply(ast, env) {
     const func = ast.operator.name
     switch (func) {
         case '>': {
-            return ast.args[0].value > ast.args[1].value
+            const left = evaluateAST(ast.args[0], env)
+            const right = evaluateAST(ast.args[1], env)
+            return left > right
         }
         case '<': {
-            return ast.args[0].value < ast.args[1].value
+            const left = evaluateAST(ast.args[0], env)
+            const right = evaluateAST(ast.args[1], env)
+            return left < right
+        }
+        case '+': {
+            const varToken = ast.args[0]
+            const varValue = evaluateAST(varToken, env)
+            const incValue = evaluateAST(ast.args[1], env)
+            return varValue + incValue
         }
         default: {
             break;
@@ -77,7 +103,7 @@ function evaluateApply(ast, env) {
     if (languageOperations[func]) {
         return languageOperations[func](ast, env)
     }
-    return null
+    throw new Error(`"${func}" is not defined`)
 }
 
 

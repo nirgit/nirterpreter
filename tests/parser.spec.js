@@ -104,6 +104,6 @@ describe('parser', () => {
         `
         const syntaxTree = parser(expression)
 
-        console.log(JSON.stringify(syntaxTree, null, 4))
+        // console.log(JSON.stringify(syntaxTree, null, 4))
     })
 })

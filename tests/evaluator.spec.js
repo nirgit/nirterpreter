@@ -39,4 +39,21 @@ describe('evaluator', () => {
 
         expect(evaluate(expression)).toEqual("yes")
     })
+
+    it('should evaluate the program', () => {
+        const program = `do(
+            define(x, 5), 
+            define(y, 18),
+            while(<(x, y), do(
+                print(+("x: ", x)),
+                define(x, +(x, 1))
+            )),
+            if(>(x, 2), do(
+                print(+("x equals y :] -> ", x)),
+                "hurray"
+            ))
+        )`
+
+        expect(evaluate(program)).toEqual("hurray")
+    })
 })
