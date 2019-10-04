@@ -4,12 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node ./src/repl.js",
     "test": "jest --watch"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "ansi-styles": "^4.1.0",
     "jest": "^24.9.0"
   }
 }
