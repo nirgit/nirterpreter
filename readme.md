@@ -19,7 +19,7 @@
 #### Example 1
 Print numbers 1 to 10 in *REPL*
 ```javascript
-do(define(x,1), while(<(x, 10), do(print(x), define(x, +(x,1))`)))
+do(define(x,1), while(<(x, 10), do(print(x), define(x, +(x,1)))))
 ```
 
 #### Example 2
