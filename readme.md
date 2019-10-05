@@ -1,6 +1,12 @@
 # Nirterpreter
 ## An experimental interpreter for a made up programming language.
 
+#### <u>Build status</u>:
+[![Build Status](https://travis-ci.org/nirgit/nirterpreter.svg?branch=master)](https://travis-ci.org/nirgit/nirterpreter)
+
+<br>
+
+
 ### How to use
 --------------------------
 
